@@ -59,7 +59,15 @@ class UserRepository {
     
     async updateUser(user_id, updateData) {
         try {
-            return await User.findByIdAndUpdate(user_id, updateData, { new: true, select: 'useername profile_avatar_base64' })
+            return await User.findByIdAndUpdate(
+                user_id,
+                updateData,
+                {
+                    new: true,
+                    runValidators: true,
+                    select: "email username profile_avatar_base64"
+                }
+            )
         }
         catch (error) {
             console.log('Error al actualizar el usuario', error)
