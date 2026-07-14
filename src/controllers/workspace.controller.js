@@ -1,4 +1,4 @@
-import ENVIROMENT from "../config/enviroment.config.js"
+import ENVIRONMENT from "../config/environment.config.js"
 import Workspace, { WORKSPACE_PROPS } from "../models/Workspace.model.js"
 import workspaceRepository from "../repositories/workspace.repository.js"
 import jwt from 'jsonwebtoken'
@@ -146,8 +146,8 @@ export const inviteUserToWorkspaceController = async (req, res) => {
             return res.status(404).json({ message: 'Workspace no encontrado' });
         }
         //token de invitacion con vencimiento
-        const inviteToken = jwt.sign({ workspace_id }, ENVIROMENT.SECRET_KEY_JWT , { expiresIn: '7d' });
-        const invite_link = `${ENVIROMENT.URL_FRONTEND}/workspace/join/${inviteToken}`
+        const inviteToken = jwt.sign({ workspace_id }, ENVIRONMENT.SECRET_KEY_JWT , { expiresIn: '7d' });
+        const invite_link = `${ENVIRONMENT.URL_FRONTEND}/workspace/join/${inviteToken}`
         res.json({
             ok: true,
             status: 200,
@@ -178,7 +178,7 @@ export const joinWorkspaceController = async (req, res) => {
         const { token } = req.params
         const user_id = req.user._id
 
-        const decoded = jwt.verify(token, ENVIROMENT.SECRET_KEY_JWT);
+        const decoded = jwt.verify(token, ENVIRONMENT.SECRET_KEY_JWT);
         const { workspace_id } = decoded
 
         const workspace = await Workspace.findById(workspace_id)

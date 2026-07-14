@@ -1,4 +1,4 @@
-import ENVIROMENT from "../config/enviroment.config.js"
+import ENVIRONMENT from "../config/environment.config.js"
 import { ServerError } from "../utils/errors.util.js"
 import jwt from 'jsonwebtoken'
 
@@ -20,7 +20,7 @@ export const authMiddleware = (req, res, next) => {
         }
 
         try{
-            const user_info = jwt.verify(authorization_token, ENVIROMENT.SECRET_KEY_JWT)
+            const user_info = jwt.verify(authorization_token, ENVIRONMENT.SECRET_KEY_JWT)
             req.user = user_info
             next()
         }

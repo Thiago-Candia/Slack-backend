@@ -1,26 +1,32 @@
-/* Los archivos cuando los importamos ademas de traer el valor SE EJECUTAN, indirectamente estamos actuvando dotenv.config()  */
 import authRouter from "./routes/auth.router.js";
-import ENVIROMENT from "./config/enviroment.config.js";
-import express from 'express'
-import mongoose from "./config/mongoDB.config.js";
-import cors from 'cors'
-import { authMiddleware } from "./middlewares/authMiddleware.js";
+import ENVIRONMENT from "./config/environment.config.js";
+import express from "express";
+import "./config/mongoDB.config.js";
+import cors from "cors";
 import workspace_router from "./routes/workspace.router.js";
 import channel_router from "./routes/channel.router.js";
 import profile_router from "./routes/profile.router.js";
 import directmessage_router from "./routes/directmessage.router.js";
 
+const allowedOrigins = ENVIRONMENT.URL_FRONTEND
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 
-
-console.log(ENVIROMENT.PORT)
-
-const app = express()
+const app = express();
 
 app.use(
     cors({
-        oirign: ENVIROMENT.URL_FRONTEND,
+        origin(origin, callback) {
+            if (!origin || allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+
+            return callback(new Error("Origin not allowed by CORS"));
+        },
         credentials: true,
-        allowedHeaders: ['Content-Type', 'Authorization']
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"]
     })
 ) 
 
@@ -41,6 +47,6 @@ app.use('/api/profile', profile_router)
 app.use('/api/dm', directmessage_router)
 
 
-app.listen(ENVIROMENT.PORT, () => {
-    console.log(`El servidor se esta ejecutando en el puerto ${ENVIROMENT.PORT}`)
+app.listen(ENVIRONMENT.PORT, () => {
+    console.log(`Server listening on port ${ENVIRONMENT.PORT}`)
 })

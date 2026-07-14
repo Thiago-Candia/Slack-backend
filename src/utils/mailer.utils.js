@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer'
-import ENVIROMENT from '../config/enviroment.config.js'
+import ENVIRONMENT from "../config/environment.config.js"
 
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: ENVIROMENT.GMAIL_USERNAME,
-        pass: ENVIROMENT.GMAIL_PASSWORD
+        user: ENVIRONMENT.GMAIL_USERNAME,
+        pass: ENVIRONMENT.GMAIL_PASSWORD
     }
 })
 

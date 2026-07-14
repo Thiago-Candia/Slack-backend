@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import ENVIROMENT from "./enviroment.config.js";
+import ENVIRONMENT from "./environment.config.js";
 
 
 const connectToMongoDB = async () => {
     try{
-        const response = await mongoose.connect(ENVIROMENT.MONGO_DB_URL)
+        const response = await mongoose.connect(ENVIRONMENT.MONGO_DB_URL)
         console.log('conexion exitosa con MongoDB \nConectados a la base de datos:', response.connection.name)
     }
 

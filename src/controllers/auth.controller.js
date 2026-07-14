@@ -3,7 +3,7 @@ import { ServerError } from '../utils/errors.util.js'
 import UserRepository from '../repositories/user.repository.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import ENVIROMENT from '../config/enviroment.config.js'
+import ENVIRONMENT from "../config/environment.config.js"
 import { sendMail } from '../utils/mailer.utils.js'
 import { USER_PROPS } from '../models/User.model.js'
 
@@ -30,7 +30,7 @@ export const registerController = async (req, res) => {
 
             const verification_token = jwt.sign(
                 {email},
-                ENVIROMENT.SECRET_KEY_JWT,
+                ENVIRONMENT.SECRET_KEY_JWT,
                 {expiresIn: '24h'} 
             ) 
 
@@ -51,7 +51,7 @@ export const registerController = async (req, res) => {
                     `
                         <h1>Valida tu email</h1>
                         <p>Para validar tu email haz click en el siguiente enlace:</p>
-                        <a href='${ENVIROMENT.URL_BACKEND}/api/auth/verify-email?verification_token=${verification_token}'>
+                        <a href='${ENVIRONMENT.URL_BACKEND}/api/auth/verify-email?verification_token=${verification_token}'>
                             Verificar cuenta
                         </a>
                     `
@@ -84,10 +84,10 @@ export const registerController = async (req, res) => {
 export const verifyEmailController = async (req, res) => {
     try{
         const { verification_token } = req.query
-        const payload =jwt.verify(verification_token, ENVIROMENT.SECRET_KEY_JWT) 
+        const payload =jwt.verify(verification_token, ENVIRONMENT.SECRET_KEY_JWT)
         const { email } = payload
         const user_found = await UserRepository.verifyUserByEmail(email) 
-        res.redirect(ENVIROMENT.URL_FRONTEND + '/login') 
+        res.redirect(ENVIRONMENT.URL_FRONTEND + '/login')
     }
     catch(error){
         console.log('Error al registrar:', error)
@@ -127,7 +127,7 @@ export const loginController = async (req, res) => {
                 [USER_PROPS.USERNAME]: user_found.username,
                 [USER_PROPS.EMAIL]: user_found.email
             },
-            ENVIROMENT.SECRET_KEY_JWT,
+            ENVIRONMENT.SECRET_KEY_JWT,
             {expiresIn: '2h'}
         )
         res.json({
@@ -170,7 +170,7 @@ export const resetPasswordController = async (req, res) => {
 
         const reset_token = jwt.sign(
             {email, _id: user_found._id}, 
-            ENVIROMENT.SECRET_KEY_JWT, 
+            ENVIRONMENT.SECRET_KEY_JWT,
             {expiresIn: '2h'}
         )
 
@@ -180,7 +180,7 @@ export const resetPasswordController = async (req, res) => {
             html: `
                 <h1>Has solicitado restablecer tu contraseña</h1>
                 <p>Para restablecer tu contraseña haz click en el siguiente enlace:</p>
-                <a href='${ENVIROMENT.URL_FRONTEND}/rewrite-password?reset_token=${reset_token}'>
+                <a href='${ENVIRONMENT.URL_FRONTEND}/rewrite-password?reset_token=${reset_token}'>
                     <button> Restablecer contraseña </button>
                 </a>
             `
@@ -215,7 +215,7 @@ export const resetPasswordController = async (req, res) => {
 export const rewritePasswordController = async (req, res) => {
     try{
         const {password, reset_token} = req.body 
-        const { _id } = jwt.verify(reset_token, ENVIROMENT.SECRET_KEY_JWT) 
+        const { _id } = jwt.verify(reset_token, ENVIRONMENT.SECRET_KEY_JWT)
 
         const newHashedPassword = await bcrypt.hash(password, 10) 
         await UserRepository.changeUserPassword(_id, newHashedPassword) 
